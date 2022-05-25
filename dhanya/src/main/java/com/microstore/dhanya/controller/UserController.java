@@ -8,6 +8,7 @@ import com.microstore.dhanya.model.Token;
 import com.microstore.dhanya.service.TokenService;
 import com.microstore.dhanya.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class UserController {
     UserService service;
 
     @Autowired
-    TokenService testService;
+    TokenService tokenService;
 
     // endpoint for signup
     @PostMapping("/register")
@@ -35,14 +36,26 @@ public class UserController {
     }
 
 
-    // trials to see if expiry of tokens works
-    @GetMapping("/{token}")
-    public ResponseEntity<String> getEmployeeById(@PathVariable(value="token") String token) throws ArithmeticException
+    // Test endpoint to see if authentication of tokens works
+    @GetMapping("/")
+    public ResponseEntity<String> authenticate(@RequestBody String token) throws ArithmeticException
     {
-        Integer val = testService.authenticateToken(token);
-        String valStr = Integer.toString(val);
+        Integer val = tokenService.authenticateToken(token);
 
-        return ResponseEntity.ok().body(valStr);
+        if(val == 1)
+        {
+            return new ResponseEntity<>("Token authenticated successfully", HttpStatus.OK);
+        }
+
+        else if(val == 2)
+        {
+            return new ResponseEntity<>("Invalid Token", HttpStatus.UNAUTHORIZED);
+        }
+
+        else
+        {
+            return new ResponseEntity<>("Expired Token", HttpStatus.UNAUTHORIZED);
+        }
     }
 
 }
