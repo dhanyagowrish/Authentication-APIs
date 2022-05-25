@@ -1,4 +1,2 @@
 # Authentication APIs  
-* Login 
-* Signup
-* Tokens
+* Implementation of login and signup with token based authentication
